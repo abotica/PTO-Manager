@@ -9,22 +9,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PTO Admin</title>
     <link rel="stylesheet" href="/styles/normalize.css">
+    <link rel="stylesheet" href="/styles/style.css">
 </head>
 
 <body>
+    <div id="form-div">
+        <h1>Login</h1>
 
-    <h1>Login</h1>
+        <form>
+            <label>Email:</label><br>
+            <input type="text" id="email" name="email" required><br>
+            <label>Password:</label><br>
+            <input type="text" id="password" name="password" required><br><br>
+            <input type="submit" id="login-button" value="Login">
 
-    <form>
-        <label>Email:</label><br>
-        <input type="text" id="email" name="email" required><br>
-        <label>Password:</label><br>
-        <input type="text" id="password" name="password" required><br><br>
-        <input type="submit" id="login-button" value="Login">
+        </form>
 
-    </form>
-
-
+    </div>
     <footer>Andrija Botica @FESB</footer>
     <script src="scripts/login.js"></script>
 </body>

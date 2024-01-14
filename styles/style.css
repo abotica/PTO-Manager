@@ -1,0 +1,21 @@
+/* making a page unscrolable */
+* {
+    overflow: hidden;
+}
+
+#form-div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+
+
+footer {
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    text-align: center;
+
+}
