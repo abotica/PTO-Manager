@@ -1,6 +1,42 @@
-/* making a page unscrolable */
-* {
+/* css below affects desktop/laptop devices */
+/* media queries will rewrite css for other devices */
+
+
+html {
+    /* making a page unscrolable */
     overflow: hidden;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+h1 {
+    font-size: 5vh;
+    margin-bottom: 10px;
+    margin-top: 10px;
+
+
+    /* this part below makes text gradient */
+    /* first it adds linear gradient background */
+    /* then it clips background to text only */
+    /* we make actual text color transparent to show gradient only */
+    /* background: linear-gradient(93deg,
+            rgba(123, 166, 174, 1) 10%,
+            rgba(80, 202, 157, 1) 85%);
+    background-clip: text;
+    color: transparent;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: (37deg, rgba(57, 151, 169, 1) 43%, rgba(45, 152, 113, 1) 67%); */
+
+
+}
+
+small {
+    margin-bottom: auto;
+}
+
+
+body {
+    background-color: #78B0AE;
+    color: #ECFDE7;
 }
 
 #form-div {
@@ -8,6 +44,124 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-top: 20vh;
+
+}
+
+#button-div {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+
+}
+
+
+
+.form-inputs {
+    background-color: #1E3D46;
+    border-radius: 20px;
+    max-width: 300px;
+    min-width: 100px;
+    width: 25vw;
+    height: 3.5vh;
+    caret-color: #ECFDE7;
+    color: #ECFDE7;
+    text-align: center;
+}
+
+::placeholder {
+    color: #ecfde778;
+    text-align: center;
+}
+
+#bubble-div {
+    width: 100%;
+    height: 100%;
+
+}
+
+#bubble-1 {
+    width: 500px;
+    position: absolute;
+    z-index: -1;
+    animation: bubble1 40s linear infinite;
+}
+
+#bubble-2 {
+    width: 300px;
+    position: absolute;
+    z-index: -2;
+    animation: bubble2 20s linear infinite;
+}
+
+#bubble-3 {
+    width: 200px;
+    position: absolute;
+    z-index: -1;
+    animation: bubble3 10s linear infinite;
+}
+
+#bubble-4 {
+    width: 350px;
+    position: absolute;
+    z-index: -2;
+    animation: bubble4 25s linear infinite;
+}
+
+@keyframes bubble1 {
+
+    0% {
+        transform: translate(-20vw, -100vh);
+    }
+
+    100% {
+        transform: translate(40vw, 200vh);
+    }
+}
+
+@keyframes bubble2 {
+
+    0% {
+        transform: translate(100vw, 100vh);
+    }
+
+    100% {
+        transform: translate(-20vw, -30vh);
+    }
+}
+
+
+@keyframes bubble3 {
+    0% {
+        transform: translate(100vw, 0vh);
+    }
+
+
+    100% {
+        transform: translate(-20vw, 80vh);
+    }
+}
+
+@keyframes bubble4 {
+    0% {
+        transform: translate(-40vw, 90vh);
+    }
+
+
+    100% {
+        transform: translate(110vw, 30vh);
+    }
+}
+
+
+.form-buttons {
+    background-color: #1E3D46;
+    color: #ECFDE7;
+    border-radius: 20px;
+    max-width: 140px;
+    max-height: 35px;
+    width: 10vw;
+    height: 3.5vh;
 
 }
 
@@ -19,3 +173,98 @@ footer {
     text-align: center;
 
 }
+
+
+/* From https: //www.w3schools.com/css/css_rwd_mediaqueries.asp media queries should have these values */
+/* Extra small devices (phones, 600px and down) */
+/* Small devices (portrait tablets and large phones, 600px and up) */
+/* Medium devices (landscape tablets, 768px and up) */
+/* Large devices (laptops/desktops, 992px and up) */
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+
+
+/* Smaller phones and devices */
+@media screen and (max-width: 600px) {
+
+    h1 {
+        font-size: xxx-large;
+    }
+
+
+    .form-inputs {
+        width: 60vw;
+        height: 6vh;
+        border-color: #0B1619;
+    }
+
+    .form-buttons {
+        width: 28vw;
+        height: 6vh;
+        font-weight: normal;
+        border-color: #0B1619;
+    }
+
+    #bubble-1 {
+        width: 90vw;
+    }
+
+    #bubble-2 {
+        width: 70vw;
+    }
+
+    #bubble-3 {
+        width: 50vw;
+    }
+
+    #bubble-4 {
+        width: 60vw;
+    }
+
+    @keyframes bubble1 {
+
+        0% {
+            transform: translate(-30vw, -70vh);
+        }
+
+        100% {
+            transform: translate(30vw, 100vh);
+        }
+    }
+
+    @keyframes bubble2 {
+
+        0% {
+            transform: translate(100vw, 100vh);
+        }
+
+        100% {
+            transform: translate(-40vw, -60vh);
+        }
+    }
+
+    @keyframes bubble3 {
+        0% {
+            transform: translate(110vw, -10vh);
+        }
+
+
+        100% {
+            transform: translate(-50vw, 50vh);
+        }
+    }
+
+    @keyframes bubble4 {
+        0% {
+            transform: translate(-50vw, 100vh);
+        }
+
+
+        100% {
+            transform: translate(130vw, 30vh);
+        }
+    }
+
+}
+
+/* Large phones and tablets */
+@media screen and (min-width: 600px) and (max-width: 992px) {}

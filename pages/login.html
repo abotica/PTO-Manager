@@ -10,22 +10,41 @@
     <title>PTO Admin</title>
     <link rel="stylesheet" href="/styles/normalize.css">
     <link rel="stylesheet" href="/styles/style.css">
+    <link rel="icon" type="image/x-icon" href="/resources/PTOfavicon.png">
 </head>
 
 <body>
-    <div id="form-div">
-        <h1>Login</h1>
+    
 
-        <form>
-            <label>Email:</label><br>
-            <input type="text" id="email" name="email" required><br>
-            <label>Password:</label><br>
-            <input type="text" id="password" name="password" required><br><br>
-            <input type="submit" id="login-button" value="Login">
-
-        </form>
+    <div id="bubble-div">
+        <img id="bubble-1" src="/resources/bubble1.png">
+        <img id="bubble-2" src="/resources/bubble2.png">
+        <img id="bubble-3" src="/resources/bubble3.png">
+        <img id="bubble-4" src="/resources/bubble4.png">
+        <div id="form-div">
+            <small>Please login or register to</small>
+            <h1>PTO Admin</h1>
+            <!-- <h2>Login</h2> -->
+        
+            <form>
+                <input type="text" id="email-field" class="form-inputs" name="email" placeholder="Email" required><br><br>
+                <input type="password" id="password-field" class="form-inputs" name="password" placeholder="Password"
+                    required><br><br>
+                <div id="button-div">
+                    <input type="submit" id="login-button" class="form-buttons" value="Login"><br><br>
+                    <input type="button" id="register-button" class="form-buttons" value="Register">
+                </div>
+            </form>
+        
+        </div>
 
     </div>
+   
+
+
+
+
+
     <footer>Andrija Botica @FESB</footer>
     <script src="scripts/login.js"></script>
 </body>
