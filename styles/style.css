@@ -126,7 +126,7 @@ body {
     }
 
     100% {
-        transform: translate(-20vw, -30vh);
+        transform: translate(-30vw, -40vh);
     }
 }
 
@@ -163,6 +163,19 @@ body {
     width: 10vw;
     height: 3.5vh;
 
+}
+
+#more-options-span {
+    padding: 20px;
+    font-size: smaller;
+    text-align: center;
+    line-height: 20px;
+}
+
+#more-options-span p a {
+    color: #172E36;
+    text-shadow: 0px 0px 3px #78B0AE;
+    font-weight: bold;
 }
 
 

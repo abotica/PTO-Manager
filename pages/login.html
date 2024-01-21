@@ -1,0 +1,62 @@
+<!-- This document is named index.html so that browser can automatically open login screen at start -->
+
+<!DOCTYPE html>
+<!--Specifies the language of the document, set to English-->
+<html lang="en">
+
+<head>
+    <!--Sets the character encoding to standard encoding type UTF-8-->
+    <meta charset="UTF-8">
+    <!--Configures the viewport settings so that website is resposive and scales to device width-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTO Admin</title>
+    <link rel="stylesheet" href="/styles/normalize.css">
+    <link rel="stylesheet" href="/styles/style.css">
+    <link rel="icon" type="image/x-icon" href="/resources/PTOfavicon.png">
+</head>
+
+<body>
+
+
+    <div id="bubble-div">
+        <img id="bubble-1" src="/resources/bubble1.png">
+        <img id="bubble-2" src="/resources/bubble2.png">
+        <img id="bubble-3" src="/resources/bubble3.png">
+        <img id="bubble-4" src="/resources/bubble4.png">
+        <div id="form-div">
+            <!-- <small>Please login to</small> -->
+            <h1>PTO Admin</h1>
+
+            <form id="login-form">
+                <input type="text" id="email-field" class="form-inputs" name="email" placeholder="Email"
+                    required><br><br>
+                <input type="password" id="password-field" class="form-inputs" name="password" placeholder="Password"
+                    required><br><br>
+                <div id="button-div">
+                    <input type="submit" id="login-button" class="form-buttons" value="Login"><br><br>
+                    <input type="button" id="register-button" class="form-buttons" value="Register">
+                </div>
+
+
+            </form>
+            <!-- not required for this task -->
+            <span id="more-options-span">
+                <p>Not a registered admin? <a href=""> Create an account</a><br><a href="">Forgot password?</a></p>
+            </span>
+
+        </div>
+
+    </div>
+
+
+
+
+
+
+    <footer>Andrija Botica @FESB</footer>
+    <script type="module" src="/scripts/cookie-functions.js"></script>
+    <script type="module" src="/scripts/login.js"></script>
+
+</body>
+
+</html>
