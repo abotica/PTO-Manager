@@ -9,13 +9,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PTO Admin</title>
     <link rel="stylesheet" href="/styles/normalize.css">
+    <link rel="stylesheet" href="/styles/index.css">
+    <link rel="icon" type="image/x-icon" href="/resources/PTOfavicon.png">
 
 </head>
 
 <body>
-    <header></header>
-    <main></main>
-    <footer>Andrija Botica @FESB</footer>
+    <!-- Navbar -->
+    <header id="navbar">
+        <div class="navbar-divs">
+            <img src="/resources/PTOfavicon.png" id="navbar-image">
+            <p>PTO Admin</p>
+        </div>
+        <div class="navbar-divs">
+            <!-- Because I used window.replace in JS I had no use of anchors so I used button -->
+            <button id="logout-button">Log Out</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Aligning popup window on the center -->
+        <div id="popup-alignment-div">
+            <div id="popup-screen">
+                <img src="/resources/warning-icon.png" id="warning-icon">
+                <p id="p1">You are trying to logout of<br>PTO Admin.</p>
+                <p id="p2">Are you sure?</p>
+                <div>
+                    <button id="logout-accept" class="popup-buttons">YES</button>
+                    <button id="logout-decline" class="popup-buttons">NO</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Div that will contain main content, used to align content properly -->
+        <div id="main-div">
+
+
+            <!-- Div containing left top and left bottom divs -->
+            <div id="left-div">
+
+                <!-- Top left div -->
+                <div id="left-top-div" class="left-right-containers">
+
+                    <div id="dropdown-menu">
+                        <button id="dropdown-button">Choose employee</button>
+                        <div id="dropdown-content">
+                            <button>Karlo Neva</button>
+                            <button>Ivan Baričević</button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Bottom left div -->
+                <div id="left-bottom-div" class="left-right-containers">
+                    <p id="left-bottom-div-text">EMPLOYEE</p>
+                    <div>
+                        <div id="image-div">
+                            <img src="/resources/karlo-ico.jpg" id="employee-photo">
+                        </div>
+                    </div>
+                    <div id="user-info-div">
+                        <p>ID:</p>
+                        <p>Name: Karlo Nevešćanin</p>
+                        <p>Username:</p>
+                        <p>Email: karlo-neva@icloud.com</p>
+                        <p>Address: Ulica zgrada grad zip geo</p>
+                        <p>Phone: +385 76 5432 021</p>
+                        <p>Website:</p>
+                        <p>Company:</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right div -->
+            <div id="right-div" class="left-right-containers">
+                <p>PTO, kalendar...</p>
+            </div>
+
+        </div>
+
+
+
+    </main>
+
+
 
     <script type="module" src="/scripts/cookie-functions.js"></script>
     <script type="module" src="/scripts/index.js"></script>
