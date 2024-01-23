@@ -81,7 +81,6 @@ body {
     display: none;
     justify-content: center;
     align-items: center;
-
     background: rgba(30, 61, 70, 0.4);
     backdrop-filter: blur(5px);
     animation: blur-background 2s linear 1;
@@ -190,16 +189,20 @@ body {
     margin-left: 10px;
 }
 
+/* OVO!!! */
 #left-top-div {
     width: 40vw;
     height: 20vh;
     margin-bottom: 10px;
+    /* animation: left-top-shrink 2s linear 1;
+    animation: left-top-expand 2s linear 1; */
 }
 
+/* OVO!!! */
 #left-bottom-div {
     width: 40vw;
     height: 70vh;
-
+    animation: left-bottom 2s linear 1;
 }
 
 #left-bottom-div-text {
@@ -219,6 +222,7 @@ body {
     background: transparent;
     border: none;
     color: white;
+    border-bottom: #1E3D46 solid 1px;
 }
 
 #dropdown-button:hover {
@@ -256,9 +260,7 @@ body {
     display: inline-block;
 }
 
-#dropdown-menu:hover #dropdown-content {
-    display: block;
-}
+
 
 @keyframes color-rotate {
 
@@ -291,7 +293,29 @@ body {
     }
 }
 
+/* @keyframes left-top-shrink {
 
+    0% {
+        height: 20vh;
+    }
+
+    100% {
+        height: 10vh;
+    }
+
+}
+
+@keyframes left-top-expand {
+
+    0% {
+        height: 10vh;
+    }
+
+    100% {
+        height: 20vh;
+    }
+
+} */
 
 
 /* From https: //www.w3schools.com/css/css_rwd_mediaqueries.asp media queries should have these values */

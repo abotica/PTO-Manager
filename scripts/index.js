@@ -1,24 +1,104 @@
 // Importing functions from module
 import { getCookieValue } from "./cookie-functions.js"
 
+// Getting elements from DOM
 const logOutButton = document.getElementById("logout-button")
-
-// Treated as the popup screen because it is its parrent div
-const popupAlignmentDiv = document.getElementById("popup-alignment-div")
-
-// Making dropdown content same height as its containing div
-const topLeftDivHeight = document.getElementById("left-top-div").offsetHeight
-const dropdownButtonHeight = document.getElementById("dropdown-button").offsetHeight
+const popupAlignmentDiv = document.getElementById("popup-alignment-div") // Treated as the popup screen because it is its parrent div
 const dropdownContent = document.getElementById("dropdown-content")
+const topLeftDiv = document.getElementById("left-top-div")
+const dropdownButton = document.getElementById("dropdown-button")
+const bottomLeftDiv = document.getElementById("left-bottom-div")
+const userInfoDiv = document.getElementById("user-info-div")
+const dropdownMenu = document.getElementById("dropdown-menu")
+const imageDiv = document.getElementById("image-div")
 
-const dropdownContentHeight = (topLeftDivHeight - dropdownButtonHeight).toString()
-dropdownContent.style.height = dropdownContentHeight + "px"
+// Fetching data from 
+async function getEmployees(fileUrl) {
+    try {
+        // Fetch data from specified file using GET request
+        const employeeObject = await fetch(fileUrl)
+        const employeeArray = await employeeObject.json()
+        return employeeArray
 
-//Fetching data from 
+    } catch (error) {
+        console.error(error)
+    }
+
+}
+
+// Await data before using it
+const employeeArray = await getEmployees("https://jsonplaceholder.typicode.com/users")
+
+// Putting employees into dropdown menu
+// Attaching event listener to each button so that we are able to know whick button is chosen
+function addEmployeesButtons(employeeArray) {
+
+    for (let i = 0; i < employeeArray.length; i++) {
+        // Create node element
+        const button = document.createElement("button")
+        button.textContent = employeeArray[i].name
+
+        // Setting employee pictures path
+        let imagePath = "/resources/employees/" + `${employeeArray[i].name}` + ".jpg"
+
+        // If names include "." like Mrs. or Mr.
+        // If there are 2 dots resulting array will have 3 elements
+        if (imagePath.split(".").length >= 3) {
+            const indexOfDot = imagePath.indexOf(".")
+            const firtsPart = imagePath.substring(0, indexOfDot + 1)
+            const secondPart = imagePath.substring(indexOfDot + 2)
+            imagePath = firtsPart + secondPart
+
+        }
+
+        // Added event listener to button
+        // We have a closure returning event handler making it unaffected by enclosing scope (for loop)
+        button.addEventListener("mouseover", ((index) => {
+            return () => {
+                handleButtonHover(index, employeeArray, imagePath)
+
+            }
+        })(i))
+
+        button.addEventListener("click", () => {
+            dropdownContent.style.display = "none"
+        })
 
 
 
 
+        // Append it to drop menu
+        dropdownContent.appendChild(button)
+
+    }
+
+}
+
+
+// Displaying data on user info div
+function handleButtonHover(index, employeeArray, imagePath) {
+    imageDiv.querySelector("img").setAttribute("src", imagePath)
+
+    // Formatting address
+    const addressElement = employeeArray[index].address
+    const address = addressElement.street + addressElement.suite + ", " + addressElement.city
+        + ", " + addressElement.zipcode + " " + `(${addressElement.geo.lat}, ${addressElement.geo.lng})`
+
+    // Formatting
+    const companyElement = employeeArray[index].company
+    const company = companyElement.name + " " + companyElement.catchPhrase
+        + " " + companyElement.vs
+
+    userInfoDiv.innerHTML = `<p>ID: ${employeeArray[index].id}</p>
+                        <p>Name: ${employeeArray[index].name}</p>
+                        <p>Username: ${employeeArray[index].username}</p>
+                        <p>Email: ${employeeArray[index].email}</p>
+                        <p>Address: ${address}</p>
+                        <p>Phone: ${employeeArray[index].phone}</p>
+                        <p>Website: ${employeeArray[index].website}</p>
+                        <p>Company: ${company}</p>`
+
+}
 
 /*
  The main reason why I decided to use 'location.replace' instead of anchors for navigating
@@ -54,5 +134,35 @@ logOutButton.onclick = () => {
         popupAlignmentDiv.style.display = "none"
     }
 }
+
+
+addEmployeesButtons(employeeArray)
+
+
+// Checking if dropdown was clicked before
+let isClicked = false
+
+// Adding dropdown functionalities
+dropdownMenu.addEventListener("click", () => {
+
+    if (!isClicked) {
+        isClicked = true
+        dropdownContent.style.display = "block"
+    }
+    else {
+        isClicked = false
+        dropdownContent.style.display = "none"
+    }
+
+
+})
+
+// Making dropdown content same height as its containing div
+const topLeftDivHeight = topLeftDiv.offsetHeight
+const dropdownButtonHeight = dropdownButton.offsetHeight
+
+// Calculating and setting height of dropdown content
+const dropdownContentHeight = (topLeftDivHeight - dropdownButtonHeight).toString()
+dropdownContent.style.height = dropdownContentHeight + "px"
 
 
