@@ -6,6 +6,14 @@ const logOutButton = document.getElementById("logout-button")
 // Treated as the popup screen because it is its parrent div
 const popupAlignmentDiv = document.getElementById("popup-alignment-div")
 
+// Making dropdown content same height as its containing div
+const topLeftDivHeight = document.getElementById("left-top-div").offsetHeight
+const dropdownButtonHeight = document.getElementById("dropdown-button").offsetHeight
+const dropdownContent = document.getElementById("dropdown-content")
+
+const dropdownContentHeight = (topLeftDivHeight - dropdownButtonHeight).toString()
+dropdownContent.style.height = dropdownContentHeight + "px"
+
 //Fetching data from 
 
 
