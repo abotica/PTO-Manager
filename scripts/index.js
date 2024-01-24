@@ -152,6 +152,7 @@ dropdownMenu.addEventListener("click", () => {
     else {
         isClicked = false
         dropdownContent.style.display = "none"
+
     }
 
 
