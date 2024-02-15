@@ -77,10 +77,13 @@
     transform: translate(-50%, -50%);
 }
 
+/* Days that are not part of the current month will be shown different color */
 #calendar-dates li.inactive{
-    color: #aaa;
+    color: #727364;
 }
 
+
+/* Days that are part of the current month will be shown in white */
 #calendar-dates li.active{
     color: #fff;
 }

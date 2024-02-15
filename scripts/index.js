@@ -84,7 +84,7 @@ function handleButtonHover(index, employeeArray, imagePath) {
     const address = addressElement.street + addressElement.suite + ", " + addressElement.city
         + ", " + addressElement.zipcode + " " + `(${addressElement.geo.lat}, ${addressElement.geo.lng})`
 
-    // Formatting
+    // Formatting company info
     const companyElement = employeeArray[index].company
     const company = companyElement.name + " " + companyElement.catchPhrase
         + " " + companyElement.vs
@@ -97,7 +97,86 @@ function handleButtonHover(index, employeeArray, imagePath) {
                         <p>Phone: ${employeeArray[index].phone}</p>
                         <p>Website: ${employeeArray[index].website}</p>
                         <p>Company: ${company}</p>`
+    
+    // Setting the "Add PTO" option to each employee shown
+    const addPtoButton = document.createElement("button")
+    // Adding button id
+    addPtoButton.setAttribute("id", "add-pto-button")
+    const addPtoButtonText = document.createTextNode(`Add ${employeeArray[index].name}'s PTO`)
+    addPtoButton.appendChild(addPtoButtonText)
+    userInfoDiv.appendChild(addPtoButton)
 
+    addPtoButton.addEventListener("click", () => {
+        addPtoButton.style = `transform: scale(1);
+                            cursor: default;
+                            width: 98%;
+                            height: 55px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            flex-direction: column;`
+
+        // topLeftDiv.style.filter = "blur(10px)"
+        // bottomLeftDiv.style.filter = "blur(10px)"
+        // addPtoButton.filter = "none"
+        addPtoButton.innerText = ""
+        const quitDiv = document.createElement("div")
+        const startDateSpan = document.createElement("span")
+        const endDateSpan = document.createElement("span")
+        const datesDiv = document.createElement("div")
+        const dateSeparator = document.createElement("p")
+        dateSeparator.innerText = "-"
+        addPtoButton.appendChild(quitDiv)
+        addPtoButton.appendChild(datesDiv)
+        datesDiv.appendChild(endDateSpan)
+        datesDiv.appendChild(dateSeparator)
+        datesDiv.appendChild(startDateSpan)
+        endDateSpan.style.backgroundColor = "black"
+        startDateSpan.style.backgroundColor = "red"
+
+        datesDiv.style = `display: flex;
+                        width: 100%;
+                        height: 40px;
+                        align-items: center;
+                        justify-content: center;`
+
+        endDateSpan.style = `width: 40%;
+                            height: 100%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;`
+
+        dateSeparator.style.width = "40px"
+
+        startDateSpan.style = `width: 40%;
+                                height: 100%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                cursor: pointer;`
+
+        endDateSpan.innerHTML = `<p>Select end date</p>`
+        startDateSpan.innerHTML = `<p>Select start date</p>`
+       
+
+
+        
+
+        quitDiv.innerText = "✕"
+        quitDiv.style = `position: absolute;
+                        width: 5%;
+                        height: 10%;
+                        color: black;
+                        font-size: 20px;
+                        left: 0;
+                        top: 0;
+                        cursor: pointer;`
+
+
+        
+    })
+    
 }
 
 /*
