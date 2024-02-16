@@ -1,5 +1,6 @@
 // Importing functions from module
 import { getCookieValue } from "./cookie-functions.js"
+import { addEventListenersToDates } from "./calendar.js"
 
 // Getting elements from DOM
 const logOutButton = document.getElementById("logout-button")
@@ -11,6 +12,9 @@ const bottomLeftDiv = document.getElementById("left-bottom-div")
 const userInfoDiv = document.getElementById("user-info-div")
 const dropdownMenu = document.getElementById("dropdown-menu")
 const imageDiv = document.getElementById("image-div")
+const pastPtoDiv = document.getElementById("past-pto-div")
+const currentPtoDiv = document.getElementById("current-pto-div")
+const futurePtoDiv = document.getElementById("future-pto-div")
 
 // Fetching data from 
 async function getEmployees(fileUrl) {
@@ -106,6 +110,27 @@ function handleButtonHover(index, employeeArray, imagePath) {
     addPtoButton.appendChild(addPtoButtonText)
     userInfoDiv.appendChild(addPtoButton)
 
+
+
+    // Flags say if the start and end dates were changed or not
+    let startDateFlag = false
+    let endDateFlag = false
+    const quitDiv = document.createElement("div")
+    const startDateSpan = document.createElement("span")
+    const endDateSpan = document.createElement("span")
+    const datesDiv = document.createElement("div")
+    const dateSeparator = document.createElement("p")
+
+    let startDateText = "Select start date"
+    let endDateText = "Select end date"
+
+    const startDateParagraph = document.createElement("p")
+    startDateParagraph.innerText = startDateText
+    const endDateParagraph = document.createElement("p")
+    endDateParagraph.innerText = endDateText
+
+    
+
     addPtoButton.addEventListener("click", () => {
         addPtoButton.style = `transform: scale(1);
                             cursor: default;
@@ -116,23 +141,16 @@ function handleButtonHover(index, employeeArray, imagePath) {
                             justify-content: center;
                             flex-direction: column;`
 
-        // topLeftDiv.style.filter = "blur(10px)"
-        // bottomLeftDiv.style.filter = "blur(10px)"
-        // addPtoButton.filter = "none"
         addPtoButton.innerText = ""
-        const quitDiv = document.createElement("div")
-        const startDateSpan = document.createElement("span")
-        const endDateSpan = document.createElement("span")
-        const datesDiv = document.createElement("div")
-        const dateSeparator = document.createElement("p")
+        
+
         dateSeparator.innerText = "-"
         addPtoButton.appendChild(quitDiv)
         addPtoButton.appendChild(datesDiv)
-        datesDiv.appendChild(endDateSpan)
-        datesDiv.appendChild(dateSeparator)
         datesDiv.appendChild(startDateSpan)
-        endDateSpan.style.backgroundColor = "black"
-        startDateSpan.style.backgroundColor = "red"
+        datesDiv.appendChild(dateSeparator)
+        datesDiv.appendChild(endDateSpan)
+        
 
         datesDiv.style = `display: flex;
                         width: 100%;
@@ -156,8 +174,8 @@ function handleButtonHover(index, employeeArray, imagePath) {
                                 justify-content: center;
                                 cursor: pointer;`
 
-        endDateSpan.innerHTML = `<p>Select end date</p>`
-        startDateSpan.innerHTML = `<p>Select start date</p>`
+        endDateSpan.appendChild(endDateParagraph)
+        startDateSpan.appendChild(startDateParagraph)
        
 
 
@@ -165,6 +183,7 @@ function handleButtonHover(index, employeeArray, imagePath) {
 
         quitDiv.innerText = "✕"
         quitDiv.style = `position: absolute;
+                        z-index: 3;
                         width: 5%;
                         height: 10%;
                         color: black;
@@ -173,10 +192,185 @@ function handleButtonHover(index, employeeArray, imagePath) {
                         top: 0;
                         cursor: pointer;`
 
-
+        quitDiv.addEventListener("mouseenter", () => {quitDiv.style.transform = "scale(1.2)"
+                                                    quitDiv.style.translate = "all 300ms"})
+        quitDiv.addEventListener("mouseleave", () => {quitDiv.style.transform = "scale(1)"})
         
+  // When we click onto "Add start date" we want to wait for the click on the clanedar and only then get the clicked value
+  // That is where promises and async/await come in
+  // We will get selected date only when we resolve the promise inside addEventListenerToDates function
+  // That promise will be resolved when we click onto some date on the calendar
+  const startDate = startDateSpan.addEventListener("click", async () => {
+    
+    
+    // Wait for the selected date from the addEventListenersToDates function
+    const selectedDate = await addEventListenersToDates()
+   
+    // Set new value of inner HTML
+    startDateText = selectedDate
+    startDateParagraph.innerText = startDateText
+    
+    startDateFlag = true
+    
+        await evaluate()
+
+  })
+
+
+  // The same thing for end date
+  const endDate = endDateSpan.addEventListener("click", async () => {
+
+    
+    const selectedDate = await addEventListenersToDates()
+    
+    endDateText = selectedDate
+    endDateParagraph.innerText = endDateText
+
+    endDateFlag = true
+
+    await evaluate()
+    
+  })
+  
+  
+
     })
     
+    
+async function evaluate(){
+    if (startDateFlag && endDateFlag){
+
+        // Make Date object so that we can compare them
+        const endDate = new Date(endDateParagraph.textContent.toString())
+        const startDate = new Date(startDateParagraph.textContent.toString())
+
+        
+
+        if(startDate > endDate){
+           endDateSpan.style.color = "red"
+           startDateSpan.style.color = "red"
+        }
+        else{
+        const acceptDiv = document.createElement("div")
+        acceptDiv.innerText = "✓"
+        acceptDiv.style = `position: absolute;
+                         z-index: 3;
+                        width: 5%;
+                        height: 10%;
+                        color: black;
+                        font-size: 20px;
+                        right: 5px;
+                        top: 0;
+                        cursor: pointer;`
+        addPtoButton.insertBefore(acceptDiv, quitDiv)
+        acceptDiv.addEventListener("mouseenter", () => {acceptDiv.style.transform = "scale(1.2)"
+                                                    acceptDiv.style.translate = "all 300ms"})
+        acceptDiv.addEventListener("mouseleave", () => {acceptDiv.style.transform = "scale(1)"})
+        acceptDiv.addEventListener("click", () => {
+            determinePtoPeriod(startDate, endDate)
+        })
+        }
+        
+        
+      }
+}
+
+
+function determinePtoPeriod(startDate, endDate){
+
+const currendDate = new Date()
+const pto = checkSeason(startDate, endDate)
+
+// Compare them and add PTO to correct time period (with picture)
+if(endDate < currendDate){ // If the end date is less than current date then PTO is past PTO
+    
+    pastPtoDiv.appendChild(pto)
+
+}
+else if(currendDate >= startDate && currendDate <= endDate){ // If the current date is between star and end date then PTO is current PTO
+    currentPtoDiv.appendChild(pto)
+}
+else if(startDate > currendDate){ // If the start date is greater than current date then PTO is future PTO 
+    futurePtoDiv.appendChild(pto)
+}
+
+}
+
+
+// Function takes start date of the PTO and checks the season in which PTO started
+// If the PTO started in January but ended, for example, in May, it will still be considered winter PTO
+function checkSeason(startDate, endDate){
+const startDateMonth = new Date(startDate).getMonth()
+
+if(startDateMonth == 11 || startDateMonth == 0 || startDateMonth == 1){ // PTO is winter PTO
+
+    const pto = document.createElement("div")
+    pto.style = `width: 100%;
+            min-height: 80px;
+            display: flex;
+            justify-content: center;
+            font-size: 30px;
+            align-items: center;
+            background-position: 50% 55%;
+            text-shadow: black 1px 0 10px;`
+    pto.style.backgroundImage = "url('https://www.mistay.in/travel-blog/content/images/size/w2000/2020/06/cover-9.jpg')"
+    
+    
+    pto.innerText = startDateParagraph.textContent + " - " + endDateParagraph.textContent
+    return pto
+}
+else if(startDateMonth == 2 || startDateMonth == 3 || startDateMonth == 4){ // PTO is spring PTO
+
+    const pto = document.createElement("div")
+    pto.style = `width: 100%;
+            min-height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            background-position: bottom;
+            text-shadow: black 1px 0 10px;
+            `
+    pto.style.backgroundImage = "url('resources/spring-season.png')"
+    
+    pto.innerText = startDateParagraph.textContent + " - " + endDateParagraph.textContent
+    return pto
+
+}
+else if(startDateMonth == 5 || startDateMonth == 6 || startDateMonth == 7){ // PTO is summer PTO
+
+    const pto = document.createElement("div")
+    pto.style = `width: 100%;
+            min-height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-position: top 100px;
+            font-size: 30px;
+            text-shadow: black 1px 0 10px;`
+    pto.style.backgroundImage = "url('resources/summer-season.png')"
+    
+    pto.innerText = startDateParagraph.textContent + " - " + endDateParagraph.textContent
+    return pto
+
+}
+else if(startDateMonth == 8 || startDateMonth == 9 || startDateMonth == 10){ // PTO is autumn PTO
+
+    const pto = document.createElement("div")
+    pto.style = `width: 100%;
+            min-height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-shadow: black 1px 0 10px;
+            font-size: 30px;`
+    pto.style.backgroundImage = "url('https://cdn.britannica.com/88/137188-050-8C779D64/Boston-Public-Garden.jpg')"
+    pto.innerText = startDateParagraph.textContent + " - " + endDateParagraph.textContent
+    return pto
+}
+
+}
+
 }
 
 /*
