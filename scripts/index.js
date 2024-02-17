@@ -16,6 +16,27 @@ const pastPtoDiv = document.getElementById("past-pto-div")
 const currentPtoDiv = document.getElementById("current-pto-div")
 const futurePtoDiv = document.getElementById("future-pto-div")
 
+// Flags say if the start and end dates were changed or not
+let startDateFlag = false
+let endDateFlag = false
+
+// Array of PTOs, holds objects which will be saved to local storage, loaded into array then read further
+// Objects contain nodelists for coresponding PTOs
+// Array is used to navigate through users by using their ID, ID starts from 1 (0 in array)
+const employeePtoArray = []
+
+// Variable to hold selected employee ID so that we can fetch employees PTOs
+let selectedId = undefined
+
+// Class that will make objects that hold nodelists for coresponding PTOs
+class employeePto{
+    constructor(pastPtos, currentPtos, futurePtos){
+        this.pastPtos = pastPtos
+        this.currentPtos = currentPtos
+        this.futurePtos = futurePtos
+    }
+}
+
 // Fetching data from 
 async function getEmployees(fileUrl) {
     try {
@@ -38,6 +59,8 @@ const employeeArray = await getEmployees("https://jsonplaceholder.typicode.com/u
 function addEmployeesButtons(employeeArray) {
 
     for (let i = 0; i < employeeArray.length; i++) {
+        // At the page refresh fill array with null to get correct number of elements
+        employeePtoArray.push(null)
         // Create node element
         const button = document.createElement("button")
         button.textContent = employeeArray[i].name
@@ -59,17 +82,28 @@ function addEmployeesButtons(employeeArray) {
         // We have a closure returning event handler making it unaffected by enclosing scope (for loop)
         button.addEventListener("mouseover", ((index) => {
             return () => {
+                // Handler to show user info when hovered
                 handleButtonHover(index, employeeArray, imagePath)
-
+                // Add option to add PTO to employee
+                addPtoOption(index, employeeArray)
             }
         })(i))
 
+        // When employee is clicked close dropdown and also get the id of selected employee (get it from info written in HTML and use it to fetch PTOs)
         button.addEventListener("click", () => {
+            // Hide dropdown
             dropdownContent.style.display = "none"
+
+            const selectedUserInfoArray = userInfoDiv.getElementsByTagName("p")
+            selectedId = Number(selectedUserInfoArray[0].textContent.charAt(selectedUserInfoArray[0].textContent.length - 1))
+
+            if(employeePtoArray[selectedId] === null){
+                const employeePtoObject = new employeePto(null, null, null)
+            }
+            else{
+
+            }
         })
-
-
-
 
         // Append it to drop menu
         dropdownContent.appendChild(button)
@@ -77,7 +111,6 @@ function addEmployeesButtons(employeeArray) {
     }
 
 }
-
 
 // Displaying data on user info div
 function handleButtonHover(index, employeeArray, imagePath) {
@@ -101,7 +134,115 @@ function handleButtonHover(index, employeeArray, imagePath) {
                         <p>Phone: ${employeeArray[index].phone}</p>
                         <p>Website: ${employeeArray[index].website}</p>
                         <p>Company: ${company}</p>`
+
     
+    
+}
+
+// Function to determine PTO period (is it current, past or future PTO)
+function determinePtoPeriod(startDate, endDate, startDateParagraph, endDateParagraph){
+
+    const currendDate = new Date()
+    const pto = checkSeason(startDate, startDateParagraph, endDateParagraph)
+    
+    // Compare them and add PTO to correct time period (with picture)
+    if(endDate < currendDate){ // If the end date is less than current date then PTO is past PTO
+        
+        pastPtoDiv.appendChild(pto)
+    
+    }
+    else if(currendDate >= startDate && currendDate <= endDate){ // If the current date is between star and end date then PTO is current PTO
+        currentPtoDiv.appendChild(pto)
+    }
+    else if(startDate > currendDate){ // If the start date is greater than current date then PTO is future PTO 
+        futurePtoDiv.appendChild(pto)
+    }
+    
+}
+
+// Function takes start date of the PTO and checks the season in which PTO started
+// If the PTO started in January but ended, for example, in May, it will still be considered winter PTO
+function checkSeason(startDate, startDateParagraph, endDateParagraph){
+    const startDateMonth = new Date(startDate).getMonth()
+    
+    if(startDateMonth == 11 || startDateMonth == 0 || startDateMonth == 1){ // PTO is winter PTO
+    
+        const pto = createPto(startDateParagraph, endDateParagraph)
+        pto.style.backgroundPosition = "50% 55%"
+        pto.style.backgroundImage = "url('https://www.mistay.in/travel-blog/content/images/size/w2000/2020/06/cover-9.jpg')"
+        
+        return pto
+    }
+    else if(startDateMonth == 2 || startDateMonth == 3 || startDateMonth == 4){ // PTO is spring PTO
+    
+        const pto = createPto(startDateParagraph, endDateParagraph)
+        pto.style.backgroundPosition = "bottom"
+        pto.style.backgroundImage = "url('resources/spring-season.png')"
+        
+        return pto
+    
+    }
+    else if(startDateMonth == 5 || startDateMonth == 6 || startDateMonth == 7){ // PTO is summer PTO
+    
+        const pto = createPto(startDateParagraph, endDateParagraph)
+        pto.style.backgroundPosition = "top 100px"
+        pto.style.backgroundImage = "url('resources/summer-season.png')"
+        
+        return pto
+    
+    }
+    else if(startDateMonth == 8 || startDateMonth == 9 || startDateMonth == 10){ // PTO is autumn PTO
+    
+        const pto = createPto(startDateParagraph, endDateParagraph)
+        pto.style.backgroundImage = "url('https://cdn.britannica.com/88/137188-050-8C779D64/Boston-Public-Garden.jpg')"
+
+        return pto
+    }
+    
+}
+
+// Function to evaluate PTO flags if PTO flags are set, if they are then let user add PTO
+async function evaluatePtoFlags(startDateFlag, endDateFlag, startDateParagraph, endDateParagraph, addPtoButton, quitDiv, startDateSpan, endDateSpan){
+    if (startDateFlag && endDateFlag){
+
+        // Make Date object so that we can compare them
+        const endDate = new Date(endDateParagraph.textContent.toString())
+        const startDate = new Date(startDateParagraph.textContent.toString())
+
+        
+
+        if(startDate > endDate){
+           endDateSpan.style.color = "red"
+           startDateSpan.style.color = "red"
+        }
+        else{
+        const acceptDiv = document.createElement("div")
+        acceptDiv.innerText = "✓"
+        acceptDiv.style = `position: absolute;
+                         z-index: 3;
+                        width: 5%;
+                        height: 10%;
+                        color: black;
+                        font-size: 20px;
+                        right: 5px;
+                        top: 0;
+                        cursor: pointer;`
+        addPtoButton.insertBefore(acceptDiv, quitDiv)
+        acceptDiv.addEventListener("mouseenter", () => {acceptDiv.style.transform = "scale(1.2)"
+                                                    acceptDiv.style.translate = "all 300ms"})
+        acceptDiv.addEventListener("mouseleave", () => {acceptDiv.style.transform = "scale(1)"})
+        acceptDiv.addEventListener("click", () => {
+            determinePtoPeriod(startDate, endDate, startDateParagraph, endDateParagraph)
+        })
+        }
+        
+        
+      }
+}
+
+
+// Function to show option to add PTOs for employee
+function addPtoOption(index, employeeArray){
     // Setting the "Add PTO" option to each employee shown
     const addPtoButton = document.createElement("button")
     // Adding button id
@@ -111,10 +252,6 @@ function handleButtonHover(index, employeeArray, imagePath) {
     userInfoDiv.appendChild(addPtoButton)
 
 
-
-    // Flags say if the start and end dates were changed or not
-    let startDateFlag = false
-    let endDateFlag = false
     const quitDiv = document.createElement("div")
     const startDateSpan = document.createElement("span")
     const endDateSpan = document.createElement("span")
@@ -196,182 +333,116 @@ function handleButtonHover(index, employeeArray, imagePath) {
                                                     quitDiv.style.translate = "all 300ms"})
         quitDiv.addEventListener("mouseleave", () => {quitDiv.style.transform = "scale(1)"})
         
-  // When we click onto "Add start date" we want to wait for the click on the clanedar and only then get the clicked value
-  // That is where promises and async/await come in
-  // We will get selected date only when we resolve the promise inside addEventListenerToDates function
-  // That promise will be resolved when we click onto some date on the calendar
-  const startDate = startDateSpan.addEventListener("click", async () => {
-    
-    
-    // Wait for the selected date from the addEventListenersToDates function
-    const selectedDate = await addEventListenersToDates()
-   
-    // Set new value of inner HTML
-    startDateText = selectedDate
-    startDateParagraph.innerText = startDateText
-    
-    startDateFlag = true
-    
-        await evaluate()
+        handleAddingStartEndDate(startDateText, endDateText, startDateParagraph, endDateParagraph, addPtoButton, quitDiv, startDateSpan, endDateSpan)
 
-  })
-
-
-  // The same thing for end date
-  const endDate = endDateSpan.addEventListener("click", async () => {
-
-    
-    const selectedDate = await addEventListenersToDates()
-    
-    endDateText = selectedDate
-    endDateParagraph.innerText = endDateText
-
-    endDateFlag = true
-
-    await evaluate()
-    
-  })
-  
-  
 
     })
-    
-    
-async function evaluate(){
-    if (startDateFlag && endDateFlag){
+}
 
-        // Make Date object so that we can compare them
-        const endDate = new Date(endDateParagraph.textContent.toString())
-        const startDate = new Date(startDateParagraph.textContent.toString())
+// Function to show start to end date of PTO
+function showPtoDate(startDateParagraph, endDateParagraph){
+    let date = undefined
 
-        
+    if(startDateParagraph.textContent === endDateParagraph.textContent){
+        date = startDateParagraph.textContent
+        return date
+    }
+    else{
+        date = startDateParagraph.textContent + " - " + endDateParagraph.textContent
+        return date
+    }
 
-        if(startDate > endDate){
-           endDateSpan.style.color = "red"
-           startDateSpan.style.color = "red"
-        }
-        else{
-        const acceptDiv = document.createElement("div")
-        acceptDiv.innerText = "✓"
-        acceptDiv.style = `position: absolute;
-                         z-index: 3;
-                        width: 5%;
-                        height: 10%;
-                        color: black;
+}
+
+// Function to create PTO element
+function createPto(startDateParagraph, endDateParagraph){
+    const pto = document.createElement("div")
+    const quitDiv = document.createElement("div")
+
+    pto.style = `width: 100%;
+    min-height: 80px;
+    display: flex;
+    justify-content: center;
+    font-size: 30px;
+    align-items: center;
+    text-shadow: black 1px 0 10px;
+    margin-bottom: 5px;
+    position: relative;`
+
+
+    quitDiv.innerText = "✕"
+    quitDiv.style = `
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;    
+                        position: absolute;
+                        z-index: 3;
+                        width: 20px;
+                        height: 20px;
                         font-size: 20px;
-                        right: 5px;
+                        right: 0;
                         top: 0;
-                        cursor: pointer;`
-        addPtoButton.insertBefore(acceptDiv, quitDiv)
-        acceptDiv.addEventListener("mouseenter", () => {acceptDiv.style.transform = "scale(1.2)"
-                                                    acceptDiv.style.translate = "all 300ms"})
-        acceptDiv.addEventListener("mouseleave", () => {acceptDiv.style.transform = "scale(1)"})
-        acceptDiv.addEventListener("click", () => {
-            determinePtoPeriod(startDate, endDate)
-        })
-        }
-        
-        
-      }
-}
+                        cursor: pointer;
+                        color: white;
+                        background: transparent;
+                        backdrop-filter: blur(3px);
+                        `
+
+   
+    quitDiv.addEventListener("mouseenter", () => {quitDiv.style.transform = "scale(1.2)"
+    quitDiv.style.translate = "all 300ms"})
+    quitDiv.addEventListener("mouseleave", () => {quitDiv.style.transform = "scale(1)"})
+    pto.innerText = showPtoDate(startDateParagraph, endDateParagraph)
+    pto.appendChild(quitDiv)
+    quitDiv.addEventListener("click", () => {
+        pto.parentElement.removeChild(pto)
+    })
 
 
-function determinePtoPeriod(startDate, endDate){
 
-const currendDate = new Date()
-const pto = checkSeason(startDate, endDate)
-
-// Compare them and add PTO to correct time period (with picture)
-if(endDate < currendDate){ // If the end date is less than current date then PTO is past PTO
-    
-    pastPtoDiv.appendChild(pto)
-
-}
-else if(currendDate >= startDate && currendDate <= endDate){ // If the current date is between star and end date then PTO is current PTO
-    currentPtoDiv.appendChild(pto)
-}
-else if(startDate > currendDate){ // If the start date is greater than current date then PTO is future PTO 
-    futurePtoDiv.appendChild(pto)
-}
-
-}
-
-
-// Function takes start date of the PTO and checks the season in which PTO started
-// If the PTO started in January but ended, for example, in May, it will still be considered winter PTO
-function checkSeason(startDate, endDate){
-const startDateMonth = new Date(startDate).getMonth()
-
-if(startDateMonth == 11 || startDateMonth == 0 || startDateMonth == 1){ // PTO is winter PTO
-
-    const pto = document.createElement("div")
-    pto.style = `width: 100%;
-            min-height: 80px;
-            display: flex;
-            justify-content: center;
-            font-size: 30px;
-            align-items: center;
-            background-position: 50% 55%;
-            text-shadow: black 1px 0 10px;`
-    pto.style.backgroundImage = "url('https://www.mistay.in/travel-blog/content/images/size/w2000/2020/06/cover-9.jpg')"
-    
-    
-    pto.innerText = startDateParagraph.textContent + " - " + endDateParagraph.textContent
-    return pto
-}
-else if(startDateMonth == 2 || startDateMonth == 3 || startDateMonth == 4){ // PTO is spring PTO
-
-    const pto = document.createElement("div")
-    pto.style = `width: 100%;
-            min-height: 80px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 30px;
-            background-position: bottom;
-            text-shadow: black 1px 0 10px;
-            `
-    pto.style.backgroundImage = "url('resources/spring-season.png')"
-    
-    pto.innerText = startDateParagraph.textContent + " - " + endDateParagraph.textContent
-    return pto
-
-}
-else if(startDateMonth == 5 || startDateMonth == 6 || startDateMonth == 7){ // PTO is summer PTO
-
-    const pto = document.createElement("div")
-    pto.style = `width: 100%;
-            min-height: 80px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-position: top 100px;
-            font-size: 30px;
-            text-shadow: black 1px 0 10px;`
-    pto.style.backgroundImage = "url('resources/summer-season.png')"
-    
-    pto.innerText = startDateParagraph.textContent + " - " + endDateParagraph.textContent
-    return pto
-
-}
-else if(startDateMonth == 8 || startDateMonth == 9 || startDateMonth == 10){ // PTO is autumn PTO
-
-    const pto = document.createElement("div")
-    pto.style = `width: 100%;
-            min-height: 80px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-shadow: black 1px 0 10px;
-            font-size: 30px;`
-    pto.style.backgroundImage = "url('https://cdn.britannica.com/88/137188-050-8C779D64/Boston-Public-Garden.jpg')"
-    pto.innerText = startDateParagraph.textContent + " - " + endDateParagraph.textContent
     return pto
 }
 
-}
+// Function to handle adding start and end dates from calendar
+async function handleAddingStartEndDate(startDateText, endDateText, startDateParagraph, endDateParagraph, addPtoButton, quitDiv, startDateSpan, endDateSpan){
+    // When we click onto "Add start date" we want to wait for the click on the clanedar and only then get the clicked value
+    // That is where promises and async/await come in
+    // We will get selected date only when we resolve the promise inside addEventListenerToDates function
+    // That promise will be resolved when we click onto some date on the calendar
+    const startDate = startDateSpan.addEventListener("click", async () => {
+      
+      
+      // Wait for the selected date from the addEventListenersToDates function
+      const selectedDate = await addEventListenersToDates()
+     
+      // Set new value of inner HTML
+      startDateText = selectedDate
+      startDateParagraph.innerText = startDateText
+      
+      startDateFlag = true
+  
+       await evaluatePtoFlags(startDateFlag, endDateFlag, startDateParagraph, endDateParagraph, addPtoButton, quitDiv, startDateSpan, endDateSpan)
+  
+    })
+  
+  
+    // The same thing for end date
+    const endDate = endDateSpan.addEventListener("click", async () => {
+  
+      
+      const selectedDate = await addEventListenersToDates()
+      
+      endDateText = selectedDate
+      endDateParagraph.innerText = endDateText
+  
+      endDateFlag = true
 
-}
+      await evaluatePtoFlags(startDateFlag, endDateFlag, startDateParagraph, endDateParagraph, addPtoButton, quitDiv, startDateSpan, endDateSpan)
+      
+    })
+    
+   
+  }
 
 /*
  The main reason why I decided to use 'location.replace' instead of anchors for navigating
@@ -408,7 +479,7 @@ logOutButton.onclick = () => {
     }
 }
 
-
+// Call the function to add employees in dropdown
 addEmployeesButtons(employeeArray)
 
 
