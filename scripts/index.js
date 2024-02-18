@@ -15,6 +15,9 @@ const imageDiv = document.getElementById("image-div")
 const pastPtoDiv = document.getElementById("past-pto-div")
 const currentPtoDiv = document.getElementById("current-pto-div")
 const futurePtoDiv = document.getElementById("future-pto-div")
+const pastPtoDivName = document.getElementById("first-p")
+const currentPtoDivName = document.getElementById("second-p")
+const futurePtoDivName = document.getElementById("third-p")
 
 // Flags say if the start and end dates were changed or not
 let startDateFlag = false
@@ -30,6 +33,32 @@ class employeePto{
         this.currentPtos = currentPtos 
         this.futurePtos = futurePtos 
     }
+}
+
+
+// If PTOs are entered show the PTO div name
+function checkPtoDivChildren(){
+if(pastPtoDiv.firstChild !== null){
+    pastPtoDivName.style.color = "white"
+}
+else{
+    pastPtoDivName.style.color = "transparent"
+}
+
+if(currentPtoDiv.firstChild !== null){
+    currentPtoDivName.style.color = "white"
+}
+
+else{
+    currentPtoDivName.style.color = "transparent"
+}
+
+if(futurePtoDiv.firstChild !== null){
+    futurePtoDivName.style.color = "white"
+}
+else{
+    futurePtoDivName.style.color = "transparent"
+}
 }
 
 // Fetching data from 
@@ -156,6 +185,8 @@ function determinePtoPeriod(startDate, endDate, startDateParagraph, endDateParag
         futurePtoDiv.appendChild(pto)
         localStorageSaver(pto, futurePtoDiv.id)
     }
+
+    checkPtoDivChildren()
     
 }
 
@@ -397,8 +428,8 @@ function createPto(startDateParagraph, endDateParagraph){
         
         localStorageRemove(pto, pto.parentElement.id)
         pto.parentElement.removeChild(pto)
+        checkPtoDivChildren()
     })
-
 
 
     return pto
@@ -476,15 +507,15 @@ function localStorageSaver(pto, ptoType){
         
         console.log(localStorageObject)
         switch (ptoType) {
-            case 0: // past PTO
+            case "past-pto-div": // past PTO
                 localStorageObject.pastPtos.push(pto.outerHTML)
                 break
         
-            case 1: // current PTO
+            case "current-pto-div": // current PTO
                 localStorageObject.currentPtos.push(pto.outerHTML)
                 break
 
-            case 2: // future PTO
+            case "future-pto-div": // future PTO
                 localStorageObject.futurePtos.push(pto.outerHTML)
                 break
         }
@@ -499,24 +530,28 @@ function localStorageParser(){
     const localStorageString = localStorage.getItem(String(selectedId))
     if(localStorageString !== null){
     const localStorageObject = JSON.parse(localStorageString)
+    
 
     if(localStorageObject.pastPtos.length !== 0){
         localStorageObject.pastPtos.forEach(node => {
+            
             pastPtoDiv.appendChild(addRemoveHandlers(node, pastPtoDiv.id))
         })
     }
     if(localStorageObject.currentPtos.length !== 0){
         localStorageObject.currentPtos.forEach(node => {
+            
             currentPtoDiv.appendChild(addRemoveHandlers(node, currentPtoDiv.id))
         })
     }
     if(localStorageObject.futurePtos.length !== 0){
         localStorageObject.futurePtos.forEach(node => {
+            
             futurePtoDiv.appendChild(addRemoveHandlers(node, futurePtoDiv.id))
         })
     }
 }
-    
+checkPtoDivChildren()
 }
 
 // Removes clicked PTO from localstorage object
@@ -531,22 +566,25 @@ function localStorageRemove(pto, ptoType){
             case "past-pto-div": // past PTO
                 index = localStorageObject.pastPtos.indexOf(pto.outerHTML)
                 localStorageObject.pastPtos.pop(index)
+                checkPtoDivChildren()
                 break
         
             case "current-pto-div": // current PTO
                 index = localStorageObject.currentPtos.indexOf(pto.outerHTML)
                 localStorageObject.currentPtos.pop(index)
+                checkPtoDivChildren()
                 break
 
             case "future-pto-div": // future PTO
                 index = localStorageObject.futurePtos.indexOf(pto.outerHTML)
                 localStorageObject.futurePtos.pop(index)
+                checkPtoDivChildren()
                 break
         }
 
         localStorageString = JSON.stringify(localStorageObject)
         localStorage.setItem(String(selectedId), localStorageString)
-
+        
 }
 
 // Function to add event handlers to node gotten from local storage
@@ -576,6 +614,7 @@ function addRemoveHandlers(ptoInnerHTML, ptoType){
     quitDiv.addEventListener("click", () => {
         localStorageRemove(ptoInnerHTML, ptoType)
         ptoNode.parentElement.removeChild(ptoNode)
+        checkPtoDivChildren()
     })
 
     return ptoNode
@@ -647,5 +686,4 @@ const dropdownButtonHeight = dropdownButton.offsetHeight
 // Calculating and setting height of dropdown content
 const dropdownContentHeight = (topLeftDivHeight - dropdownButtonHeight).toString()
 dropdownContent.style.height = dropdownContentHeight + "px"
-
 
