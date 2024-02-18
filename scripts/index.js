@@ -20,20 +20,15 @@ const futurePtoDiv = document.getElementById("future-pto-div")
 let startDateFlag = false
 let endDateFlag = false
 
-// Array of PTOs, holds objects which will be saved to local storage, loaded into array then read further
-// Objects contain nodelists for coresponding PTOs
-// Array is used to navigate through users by using their ID, ID starts from 1 (0 in array)
-const employeePtoArray = []
-
 // Variable to hold selected employee ID so that we can fetch employees PTOs
 let selectedId = undefined
 
-// Class that will make objects that hold nodelists for coresponding PTOs
+// Class that will make objects that hold arrays of nodes for coresponding PTOs
 class employeePto{
     constructor(pastPtos, currentPtos, futurePtos){
         this.pastPtos = pastPtos
-        this.currentPtos = currentPtos
-        this.futurePtos = futurePtos
+        this.currentPtos = currentPtos 
+        this.futurePtos = futurePtos 
     }
 }
 
@@ -59,8 +54,7 @@ const employeeArray = await getEmployees("https://jsonplaceholder.typicode.com/u
 function addEmployeesButtons(employeeArray) {
 
     for (let i = 0; i < employeeArray.length; i++) {
-        // At the page refresh fill array with null to get correct number of elements
-        employeePtoArray.push(null)
+       
         // Create node element
         const button = document.createElement("button")
         button.textContent = employeeArray[i].name
@@ -95,14 +89,12 @@ function addEmployeesButtons(employeeArray) {
             dropdownContent.style.display = "none"
 
             const selectedUserInfoArray = userInfoDiv.getElementsByTagName("p")
+            // Ensure that only seleceted employees data is handled
             selectedId = Number(selectedUserInfoArray[0].textContent.charAt(selectedUserInfoArray[0].textContent.length - 1))
 
-            if(employeePtoArray[selectedId] === null){
-                const employeePtoObject = new employeePto(null, null, null)
-            }
-            else{
-
-            }
+            localStorageParser()
+            
+            
         })
 
         // Append it to drop menu
@@ -149,13 +141,20 @@ function determinePtoPeriod(startDate, endDate, startDateParagraph, endDateParag
     if(endDate < currendDate){ // If the end date is less than current date then PTO is past PTO
         
         pastPtoDiv.appendChild(pto)
-    
+
+        // This could have been done without using another function
+        // That way we wouldn't have to check to which time period PTO belongs to by using switch-case because it is already done inside these if-elses
+        // Downside is that code will become hard to read
+        localStorageSaver(pto, pastPtoDiv.id)
+
     }
     else if(currendDate >= startDate && currendDate <= endDate){ // If the current date is between star and end date then PTO is current PTO
         currentPtoDiv.appendChild(pto)
+        localStorageSaver(pto, currentPtoDiv.id)
     }
     else if(startDate > currendDate){ // If the start date is greater than current date then PTO is future PTO 
         futurePtoDiv.appendChild(pto)
+        localStorageSaver(pto, futurePtoDiv.id)
     }
     
 }
@@ -395,6 +394,8 @@ function createPto(startDateParagraph, endDateParagraph){
     pto.innerText = showPtoDate(startDateParagraph, endDateParagraph)
     pto.appendChild(quitDiv)
     quitDiv.addEventListener("click", () => {
+        
+        localStorageRemove(pto, pto.parentElement.id)
         pto.parentElement.removeChild(pto)
     })
 
@@ -444,6 +445,141 @@ async function handleAddingStartEndDate(startDateText, endDateText, startDatePar
    
   }
 
+// Adds PTO to coresponding employee local storage
+function localStorageSaver(pto, ptoType){
+    
+    // If it doesn't exist create it and append to it
+    if(localStorage.getItem(selectedId) === null){
+        const localStorageData = new employeePto([], [], [])
+        
+        switch (ptoType) {
+            case "past-pto-div": // past PTO
+                localStorageData.pastPtos.push(pto.outerHTML)
+                break
+        
+            case "current-pto-div": // current PTO
+                localStorageData.currentPtos.push(pto.outerHTML)
+                break
+
+            case "future-pto-div": // future PTO
+                localStorageData.futurePtos.push(pto.outerHTML)
+                break
+        }
+
+        const localStorageString = JSON.stringify(localStorageData)
+
+        localStorage.setItem(String(selectedId), localStorageString)
+    }
+    else{// If it does exist append to an object inside local storage
+        let localStorageString = localStorage.getItem(String(selectedId))
+        const localStorageObject = JSON.parse(localStorageString)
+        
+        console.log(localStorageObject)
+        switch (ptoType) {
+            case 0: // past PTO
+                localStorageObject.pastPtos.push(pto.outerHTML)
+                break
+        
+            case 1: // current PTO
+                localStorageObject.currentPtos.push(pto.outerHTML)
+                break
+
+            case 2: // future PTO
+                localStorageObject.futurePtos.push(pto.outerHTML)
+                break
+        }
+
+        localStorageString = JSON.stringify(localStorageObject)
+        localStorage.setItem(String(selectedId), localStorageString)
+    }
+}
+
+// Reads PTOs from selected employee
+function localStorageParser(){
+    const localStorageString = localStorage.getItem(String(selectedId))
+    if(localStorageString !== null){
+    const localStorageObject = JSON.parse(localStorageString)
+
+    if(localStorageObject.pastPtos.length !== 0){
+        localStorageObject.pastPtos.forEach(node => {
+            pastPtoDiv.appendChild(addRemoveHandlers(node, pastPtoDiv.id))
+        })
+    }
+    if(localStorageObject.currentPtos.length !== 0){
+        localStorageObject.currentPtos.forEach(node => {
+            currentPtoDiv.appendChild(addRemoveHandlers(node, currentPtoDiv.id))
+        })
+    }
+    if(localStorageObject.futurePtos.length !== 0){
+        localStorageObject.futurePtos.forEach(node => {
+            futurePtoDiv.appendChild(addRemoveHandlers(node, futurePtoDiv.id))
+        })
+    }
+}
+    
+}
+
+// Removes clicked PTO from localstorage object
+function localStorageRemove(pto, ptoType){
+
+    let localStorageString = localStorage.getItem(String(selectedId))
+        const localStorageObject = JSON.parse(localStorageString)
+        let index = undefined
+
+        console.log(localStorageObject)
+        switch (ptoType) {
+            case "past-pto-div": // past PTO
+                index = localStorageObject.pastPtos.indexOf(pto.outerHTML)
+                localStorageObject.pastPtos.pop(index)
+                break
+        
+            case "current-pto-div": // current PTO
+                index = localStorageObject.currentPtos.indexOf(pto.outerHTML)
+                localStorageObject.currentPtos.pop(index)
+                break
+
+            case "future-pto-div": // future PTO
+                index = localStorageObject.futurePtos.indexOf(pto.outerHTML)
+                localStorageObject.futurePtos.pop(index)
+                break
+        }
+
+        localStorageString = JSON.stringify(localStorageObject)
+        localStorage.setItem(String(selectedId), localStorageString)
+
+}
+
+// Function to add event handlers to node gotten from local storage
+function addRemoveHandlers(ptoInnerHTML, ptoType){
+    let temp = document.createElement("div")
+    temp.innerHTML = ptoInnerHTML
+
+    let childNodes = temp.getElementsByTagName("div")
+    const ptoNode = childNodes[0]
+    console.log(ptoNode)
+
+    childNodes = ptoNode.getElementsByTagName("div")
+    const quitDiv = childNodes[0]
+    console.log(quitDiv)
+    
+    quitDiv.addEventListener("mouseenter", () => {
+        quitDiv.style.transform = "scale(1.2)"
+        quitDiv.style.translate = "all 300ms"
+    })
+
+    
+
+    quitDiv.addEventListener("mouseleave", () => {
+        quitDiv.style.transform = "scale(1)"
+    })
+
+    quitDiv.addEventListener("click", () => {
+        localStorageRemove(ptoInnerHTML, ptoType)
+        ptoNode.parentElement.removeChild(ptoNode)
+    })
+
+    return ptoNode
+}
 /*
  The main reason why I decided to use 'location.replace' instead of anchors for navigating
  between login and index page is that it removes the page from document history.
@@ -492,13 +628,15 @@ dropdownMenu.addEventListener("click", () => {
     if (!isClicked) {
         isClicked = true
         dropdownContent.style.display = "block"
+        pastPtoDiv.innerHTML = ""
+        currentPtoDiv.innerHTML = ""
+        futurePtoDiv.innerHTML = ""
     }
     else {
         isClicked = false
         dropdownContent.style.display = "none"
 
     }
-
 
 })
 
