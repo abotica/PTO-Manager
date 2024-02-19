@@ -291,6 +291,7 @@ function addPtoOption(index, employeeArray){
     const datesDiv = document.createElement("div")
     const dateSeparator = document.createElement("p")
 
+    
     let startDateText = "Select start date"
     let endDateText = "Select end date"
 
@@ -347,10 +348,6 @@ function addPtoOption(index, employeeArray){
         endDateSpan.appendChild(endDateParagraph)
         startDateSpan.appendChild(startDateParagraph)
        
-
-
-        
-
         quitDiv.innerText = "✕"
         quitDiv.style = `position: absolute;
                         z-index: 3;

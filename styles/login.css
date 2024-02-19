@@ -2,7 +2,7 @@
 /* media queries will rewrite css for other devices */
 
 
-html {
+* {
     /* making a page unscrolable */
     overflow: hidden;
     font-family: Georgia, 'Times New Roman', Times, serif;
@@ -196,8 +196,8 @@ footer {
 /* Extra large devices (large laptops and desktops, 1200px and up) */
 
 
-/* Smaller phones and devices */
-@media screen and (max-width: 600px) {
+/* Smaller and larger phones and devices */
+@media screen and (max-width: 993px) {
 
     h1 {
         font-size: xxx-large;
@@ -278,6 +278,3 @@ footer {
     }
 
 }
-
-/* Large phones and tablets */
-@media screen and (min-width: 600px) and (max-width: 992px) {}

@@ -433,8 +433,39 @@ body {
 /* Extra large devices (large laptops and desktops, 1200px and up) */
 
 
-/* Smaller phones and devices */
-@media screen and (max-width: 600px) {}
+/* Larger and smaller phones and devices */
+@media screen and (max-width: 992px) {
+    #main-div{
+        flex-direction: column;
+        overflow-y: scroll;
+        align-items: center;
+    }
 
-/* Large phones and tablets */
-@media screen and (min-width: 600px) and (max-width: 992px) {}
+    #left-div{
+        width: 90vw;
+        margin: 0;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #left-top-div{
+        width: 100%;
+    }
+
+    #left-bottom-div{
+        width: 100%;
+    }
+
+    #right-div{
+        width: 90vw;
+        margin: 30px 0;
+        margin-bottom: 10vh;
+    }
+
+    #left-bottom-div>div{
+        margin-top: 5px;
+    }
+
+    
+}
+

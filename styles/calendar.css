@@ -95,3 +95,29 @@
 #calendar-dates li:not(.active):hover::before {
     background: #e4e1e1;
 }
+
+@media screen and (max-width: 992px){
+    #calendar-days{
+        padding: 0;
+    }
+
+    #calendar-dates{
+        padding: 0;
+    }
+
+    #calendar-current-date{
+        position: absolute;
+        z-index: 2;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: medium;
+        font-weight: bold;
+        
+    }
+
+    #calendar-nav{
+        width: 100%;
+        justify-content: space-between;
+    }
+
+}
