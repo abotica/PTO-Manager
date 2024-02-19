@@ -1,6 +1,7 @@
 This is the practical assignment for my Internet Programming course.
 
 **Assignment**
+
 The goal of this project is to apply all the skills acquired through laboratory exercises on the website.
 
 The website should represent an imitation of an administrator page within a company, displaying information about employees and providing the ability to view and manipulate Paid Time Off (PTO) schedules for employees (annual leave, sick leave, and other types of paid absences).
