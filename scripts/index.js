@@ -89,6 +89,7 @@ function addEmployeesButtons(employeeArray) {
         button.textContent = employeeArray[i].name
 
         // Setting employee pictures path
+        // Pictures are NOT COPYRIGHTED, they were taken from https://stock.adobe.com/hr/search/free?k=employees&search_type=usertyped&asset_id=477254497 and were licensed for free
         let imagePath = "/resources/employees/" + `${employeeArray[i].name}` + ".jpg"
 
         // If names include "." like Mrs. or Mr.
