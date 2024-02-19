@@ -1,6 +1,6 @@
-This is the practical assignment for my Internet Programming course.
+# This is the practical assignment for my Internet Programming course.
 
-**Assignment**
+# **Assignment**
 
 The goal of this project is to apply all the skills acquired through laboratory exercises on the website.
 
