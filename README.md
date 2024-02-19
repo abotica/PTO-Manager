@@ -1,4 +1,4 @@
-# This is the practical assignment for my Internet Programming course.
+This is the practical assignment for my Internet Programming course.
 
 # **Assignment**
 
