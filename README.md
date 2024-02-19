@@ -40,6 +40,6 @@ Functionalities:
 8. Data about all PTO schedules for employees is stored in localStorage so that when the page is refreshed, data is not lost but is loaded from memory.
 
 9. A logged-in user can delete PTO schedules.
-![image (4)](https://github.com/abotica/Rad-PZI/assets/97023596/991f4b76-df49-4a63-a6ea-5395ba87f9b2)
-![image (1)](https://github.com/abotica/Rad-PZI/assets/97023596/1c203192-48fd-42c7-85cc-2d6627c38028)
 ![image](https://github.com/abotica/Rad-PZI/assets/97023596/a9ba41c4-d32a-42af-9d55-03899f28be8f)
+![image (1)](https://github.com/abotica/Rad-PZI/assets/97023596/1c203192-48fd-42c7-85cc-2d6627c38028)
+![image (4)](https://github.com/abotica/Rad-PZI/assets/97023596/991f4b76-df49-4a63-a6ea-5395ba87f9b2)
