@@ -1,3 +1,5 @@
+// Inspiration and materials for the calendar gotten from https://www.geeksforgeeks.org/how-to-design-a-simple-calendar-using-javascript/amp/
+
 // Get the current date
 let date = new Date()
 // Extract year from the current date
