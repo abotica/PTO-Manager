@@ -75,8 +75,6 @@ const createCalendar = () => {
 }
 // Call the createCalendar function to update the calendar display
 createCalendar()
-// Call function to add listeners to shown days
-// addEventListenersToDates()
  
 // Attach a click event listener to each icon
 prevNext.forEach(icon => {
@@ -113,47 +111,6 @@ prevNext.forEach(icon => {
     })
 })
 
-// // Function to add event listeners to every day that could be clicked when making PTO and returns the clicked date
-// export function addEventListenersToDates(){
-// // Get all the list items (days shown on the calendar)
-// allCurrentlyShownDays = document.querySelectorAll("#calendar-dates li")
-// // Attach event listener on each list item
-// allCurrentlyShownDays.forEach(day => {
-
-//     let currentDate = document.getElementById("calendar-current-date")
-//     let selectedDate = undefined
-
-
-//     day.addEventListener("click", () =>{
-
-//         let currentMonthAndYear = currDate.textContent.split(" ")
-//         let currentMonth = months.indexOf(currentMonthAndYear[0])
-//         let currentYear = Number(currentMonthAndYear[1])
-//         let currentDay = Number(day.textContent)
-//         // Get date for the clicked day
-//         let clickedDate = new Date(currentYear, currentMonth, currentDay)
-        
-
-//         // If the selected day is not for the current month (inactive) then calculate the month (and year)
-//         if(day.getAttribute("class") === "inactive"){
-//             // If current day is one of the starting days of the month (let 15 be the middle value)
-//             if(currentDay >= 1 && currentDay < 15){
-//                 clickedDate = new Date(currentYear, currentMonth + 1, currentDay)
-//             }
-//             // If it is one of the ending days of the month
-//             else if (currentDay > 15){
-//                 clickedDate = new Date(currentYear, currentMonth - 1, currentDay)
-//             }
-//         }
-        
-//         return clickedDate
-//     })
-
-// })
-
-
-// }
-
 // Function to add event listener to the first clicked day when making PTO and returns the selected date
 export function addEventListenersToDates() {
     // Get all the list items (days shown on the calendar)
@@ -165,22 +122,27 @@ export function addEventListenersToDates() {
       allCurrentlyShownDays.forEach(day => {
 
         const currentDateElement = document.getElementById("calendar-current-date")
+
+        // Extracting textual information and converting to number where needed
         let currentMonthAndYear = currentDateElement.textContent.split(" ")
         let currentMonth = months.indexOf(currentMonthAndYear[0])
         let currentYear = Number(currentMonthAndYear[1])
         let currentDay = Number(day.textContent)
+
         // Using Date object again so that it calculates date correctly if, e.g., we click 30th December of the year before current year
         let clickedDate = new Date(currentYear, currentMonth, currentDay)
         let formattedDate = currentDay + " " + months[clickedDate.getMonth()] + " " + clickedDate.getFullYear()
   
-        if (day.getAttribute("class") === "inactive") {
-          if (currentDay >= 1 && currentDay < 15) {
+        // This is used to identify if day belongs to month before or after
+        // Calendar can show just some days that belong to inactive months so value 15 is used like some middle value to calculate it (there will never be day 15 from last or next month in the currently shown month)
+        if (day.getAttribute("class") === "inactive") { 
+          if (currentDay >= 1 && currentDay < 15) {// If the day belongs to inactive days and is lesser than 15 then it is from month before
 
             clickedDate = new Date(currentYear, currentMonth + 1, currentDay)
             formattedDate = currentDay + " " + months[clickedDate.getMonth()] + " " + clickedDate.getFullYear()
   
 
-          } else if (currentDay > 15) {
+          } else if (currentDay > 15) {// If the day belongs to inactive days and is greater than 15 then it is from month after
 
             clickedDate = new Date(currentYear, currentMonth - 1, currentDay)
             formattedDate = currentDay + " " + months[clickedDate.getMonth()] + " " + clickedDate.getFullYear()

@@ -36,7 +36,7 @@ class employeePto{
 }
 
 
-// If PTOs are entered show the PTO div name
+// If PTOs are entered show the PTO div name or hide it if there are none entered
 function checkPtoDivChildren(){
 if(pastPtoDiv.firstChild !== null){
     pastPtoDivName.style.color = "white"
@@ -119,9 +119,11 @@ function addEmployeesButtons(employeeArray) {
             dropdownContent.style.display = "none"
 
             const selectedUserInfoArray = userInfoDiv.getElementsByTagName("p")
+
             // Ensure that only seleceted employees data is handled
             selectedId = Number(selectedUserInfoArray[0].textContent.charAt(selectedUserInfoArray[0].textContent.length - 1))
 
+            // Parse the data saved in local storage (if any)
             localStorageParser()
            
             
@@ -189,6 +191,7 @@ function determinePtoPeriod(startDate, endDate, startDateParagraph, endDateParag
         localStorageSaver(pto, futurePtoDiv.id)
     }
 
+    // Check if there are PTOs in div so that we can hide the div name or leave it
     checkPtoDivChildren()
     
 }
@@ -198,6 +201,7 @@ function determinePtoPeriod(startDate, endDate, startDateParagraph, endDateParag
 function checkSeason(startDate, startDateParagraph, endDateParagraph){
     const startDateMonth = new Date(startDate).getMonth()
     
+    // Months in JS Date object are numerated from 0 to 11, 0 is January and 11 is December
     if(startDateMonth == 11 || startDateMonth == 0 || startDateMonth == 1){ // PTO is winter PTO
     
         const pto = createPto(startDateParagraph, endDateParagraph)
@@ -243,12 +247,12 @@ async function evaluatePtoFlags(startDateFlag, endDateFlag, startDateParagraph, 
         const startDate = new Date(startDateParagraph.textContent.toString())
 
         
-
+        // If start date is greater than end it is not valid period
         if(startDate > endDate){
            endDateSpan.style.color = "red"
            startDateSpan.style.color = "red"
         }
-        else{
+        else{// If it is valid then let admin asign PTO
         const acceptDiv = document.createElement("div")
         acceptDiv.innerText = "✓"
         acceptDiv.style = `position: absolute;
@@ -284,24 +288,25 @@ function addPtoOption(index, employeeArray){
     addPtoButton.appendChild(addPtoButtonText)
     userInfoDiv.appendChild(addPtoButton)
 
-
+    // Creating different containers to structure shown elements
     const quitDiv = document.createElement("div")
     const startDateSpan = document.createElement("span")
     const endDateSpan = document.createElement("span")
     const datesDiv = document.createElement("div")
     const dateSeparator = document.createElement("p")
 
-    
+    // Initial text inside of select and end date divs
     let startDateText = "Select start date"
     let endDateText = "Select end date"
 
+    // Paragraph elements which will store selected and inital date strings
     const startDateParagraph = document.createElement("p")
     startDateParagraph.innerText = startDateText
     const endDateParagraph = document.createElement("p")
     endDateParagraph.innerText = endDateText
 
     
-
+    // When addPtoButton is clicked animate its appearance and append all previously created divs
     addPtoButton.addEventListener("click", () => {
         addPtoButton.style = `transform: scale(1);
                             cursor: default;
@@ -348,7 +353,7 @@ function addPtoOption(index, employeeArray){
         endDateSpan.appendChild(endDateParagraph)
         startDateSpan.appendChild(startDateParagraph)
        
-        // Could not implement the removal of this div when X is clicked so it currently has no function
+        // Could not implement the removal of this div when X is clicked so it currently has no function, but will have in future
         quitDiv.innerText = "✕"
         quitDiv.style = `position: absolute;
                         z-index: 3;
@@ -364,6 +369,7 @@ function addPtoOption(index, employeeArray){
                                                     quitDiv.style.translate = "all 300ms"})
         quitDiv.addEventListener("mouseleave", () => {quitDiv.style.transform = "scale(1)"})
         
+        // Handle chosen dates
         handleAddingStartEndDate(startDateText, endDateText, startDateParagraph, endDateParagraph, addPtoButton, quitDiv, startDateSpan, endDateSpan)
 
 
@@ -385,7 +391,7 @@ function showPtoDate(startDateParagraph, endDateParagraph){
 
 }
 
-// Function to create PTO element
+// Function to create PTO element to minimize copy-pasting code
 function createPto(startDateParagraph, endDateParagraph){
     const pto = document.createElement("div")
     const quitDiv = document.createElement("div")
@@ -425,6 +431,7 @@ function createPto(startDateParagraph, endDateParagraph){
     quitDiv.addEventListener("mouseleave", () => {quitDiv.style.transform = "scale(1)"})
     pto.innerText = showPtoDate(startDateParagraph, endDateParagraph)
     pto.appendChild(quitDiv)
+    // When clicked delete PTO from DOM and local storage so that it does not appear now and in future
     quitDiv.addEventListener("click", () => {
         
         localStorageRemove(pto, pto.parentElement.id)
@@ -454,6 +461,8 @@ async function handleAddingStartEndDate(startDateText, endDateText, startDatePar
       
       startDateFlag = true
   
+      // Evaluate if both flags are set, works fine but duplicates the checkmark which appears after successful evaluation
+      // Bug does not interfere with the workings of program
        await evaluatePtoFlags(startDateFlag, endDateFlag, startDateParagraph, endDateParagraph, addPtoButton, quitDiv, startDateSpan, endDateSpan)
   
     })
@@ -498,8 +507,8 @@ function localStorageSaver(pto, ptoType){
                 break
         }
 
+        // Before adding our data to local storage we need to convert it to JSON string
         const localStorageString = JSON.stringify(localStorageData)
-
         localStorage.setItem(String(selectedId), localStorageString)
     }
     else{// If it does exist append to an object inside local storage
@@ -521,6 +530,7 @@ function localStorageSaver(pto, ptoType){
                 break
         }
 
+        // Before adding our data to local storage we need to convert it to JSON string
         localStorageString = JSON.stringify(localStorageObject)
         localStorage.setItem(String(selectedId), localStorageString)
     }
@@ -528,7 +538,9 @@ function localStorageSaver(pto, ptoType){
 
 // Reads PTOs from selected employee
 function localStorageParser(){
+    // Fetch data from local storage
     const localStorageString = localStorage.getItem(String(selectedId))
+    // If there is data then convert it to JS object and use it
     if(localStorageString !== null){
     const localStorageObject = JSON.parse(localStorageString)
     
@@ -562,7 +574,7 @@ function localStorageRemove(pto, ptoType){
         const localStorageObject = JSON.parse(localStorageString)
         let index = undefined
 
-        console.log(localStorageObject)
+        // Switch case to find which category does PTO belong to
         switch (ptoType) {
             case "past-pto-div": // past PTO
                 index = localStorageObject.pastPtos.indexOf(pto.outerHTML)
@@ -588,18 +600,18 @@ function localStorageRemove(pto, ptoType){
         
 }
 
-// Function to add event handlers to node gotten from local storage
+// Function to add event handlers to node gotten from local storage ensuring node deletion from local storage and DOM
 function addRemoveHandlers(ptoInnerHTML, ptoType){
+    // Creating temporary div element so that we can manipulate innerHTML (can not do it directly without its parent)
     let temp = document.createElement("div")
     temp.innerHTML = ptoInnerHTML
 
     let childNodes = temp.getElementsByTagName("div")
+    // What we want is the first child shown in HTML
     const ptoNode = childNodes[0]
-    console.log(ptoNode)
 
     childNodes = ptoNode.getElementsByTagName("div")
     const quitDiv = childNodes[0]
-    console.log(quitDiv)
     
     quitDiv.addEventListener("mouseenter", () => {
         quitDiv.style.transform = "scale(1.2)"
@@ -612,6 +624,7 @@ function addRemoveHandlers(ptoInnerHTML, ptoType){
         quitDiv.style.transform = "scale(1)"
     })
 
+    // When X is clicked remove node from local storage and from DOM
     quitDiv.addEventListener("click", () => {
         localStorageRemove(ptoInnerHTML, ptoType)
         ptoNode.parentElement.removeChild(ptoNode)
