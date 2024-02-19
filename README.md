@@ -1,5 +1,6 @@
 This was the practical assignment for my Internet Programming course written in HTML, CSS and JS.
 
+
 # **Assignment**
 
 The goal of this project is to apply all the skills acquired through laboratory exercises on the website.
