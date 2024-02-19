@@ -348,6 +348,7 @@ function addPtoOption(index, employeeArray){
         endDateSpan.appendChild(endDateParagraph)
         startDateSpan.appendChild(startDateParagraph)
        
+        // Could not implement the removal of this div when X is clicked so it currently has no function
         quitDiv.innerText = "✕"
         quitDiv.style = `position: absolute;
                         z-index: 3;
