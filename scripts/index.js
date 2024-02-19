@@ -35,6 +35,11 @@ class employeePto{
     }
 }
 
+// Index of the calendar start date
+let indexStartDate = null
+// Index of calendar end date
+let indexEndDate = null
+
 
 // If PTOs are entered show the PTO div name
 function checkPtoDivChildren(){
@@ -451,7 +456,33 @@ async function handleAddingStartEndDate(startDateText, endDateText, startDatePar
       // Set new value of inner HTML
       startDateText = selectedDate
       startDateParagraph.innerText = startDateText
+      const datesDiv = document.getElementById("calendar-dates")
+      const dates = datesDiv.getElementsByTagName("li")
+
+      // Used for reseting the background color
+        if(indexStartDate !== null){
+            dates[indexStartDate].style = ""
+        }
+
+        // Setting the clicked date background
+      for (let i = 0; i < dates.length; i++){
+        const clickedDate = dates[i]
+
+
+        if(clickedDate.textContent.trim() === selectedDate.split(" ")[0]){
+            clickedDate.style = `
+                                text-shadow: 0px 4px 15px rgb(0, 255, 0), 0px -4px 15px rgb(0, 255, 0), 4px 0px 15px rgb(0, 255, 0), -4px 0px 15px rgb(0, 255, 0);
+                                
+                                `
+            indexStartDate = i
+            break
+        }
+      }
       
+        
+
+    
+
       startDateFlag = true
   
        await evaluatePtoFlags(startDateFlag, endDateFlag, startDateParagraph, endDateParagraph, addPtoButton, quitDiv, startDateSpan, endDateSpan)
@@ -467,6 +498,28 @@ async function handleAddingStartEndDate(startDateText, endDateText, startDatePar
       
       endDateText = selectedDate
       endDateParagraph.innerText = endDateText
+      const datesDiv = document.getElementById("calendar-dates")
+      const dates = datesDiv.getElementsByTagName("li")
+
+       // Used for reseting the background color
+       if(indexEndDate !== null){
+        dates[indexEndDate].style = ""
+    }
+
+    // Setting the clicked date background
+  for (let i = 0; i < dates.length; i++){
+    const clickedDate = dates[i]
+
+
+    if(clickedDate.textContent.trim() === selectedDate.split(" ")[0]){
+        clickedDate.style = `
+                            text-shadow: 0px 4px 15px rgb(255, 0, 0), 0px -4px 15px rgb(255, 0, 0), 4px 0px 15px rgb(255, 0, 0), -4px 0px 15px rgb(255, 0, 0);
+                            
+                            `
+        indexEndDate = i
+        break
+    }
+  }
   
       endDateFlag = true
 
