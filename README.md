@@ -1,4 +1,4 @@
-This is the practical assignment for my Internet Programming course.
+This was the practical assignment for my Internet Programming course written in HTML, CSS and JS.
 
 # **Assignment**
 
