@@ -109,6 +109,7 @@ function addEmployeesButtons(employeeArray) {
                 handleButtonHover(index, employeeArray, imagePath)
                 // Add option to add PTO to employee
                 addPtoOption(index, employeeArray)
+                
             }
         })(i))
 
@@ -122,6 +123,7 @@ function addEmployeesButtons(employeeArray) {
             selectedId = Number(selectedUserInfoArray[0].textContent.charAt(selectedUserInfoArray[0].textContent.length - 1))
 
             localStorageParser()
+           
             
             
         })
@@ -165,6 +167,7 @@ function determinePtoPeriod(startDate, endDate, startDateParagraph, endDateParag
 
     const currendDate = new Date()
     const pto = checkSeason(startDate, startDateParagraph, endDateParagraph)
+    currendDate.setHours(0, 0, 0, 0)
     
     // Compare them and add PTO to correct time period (with picture)
     if(endDate < currendDate){ // If the end date is less than current date then PTO is past PTO
@@ -670,6 +673,7 @@ dropdownMenu.addEventListener("click", () => {
         pastPtoDiv.innerHTML = ""
         currentPtoDiv.innerHTML = ""
         futurePtoDiv.innerHTML = ""
+        checkPtoDivChildren()
     }
     else {
         isClicked = false
